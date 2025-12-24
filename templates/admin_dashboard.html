@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Admin Dashboard</h4>
+<a href="{{ url_for('admin_account_requests') }}" class="btn btn-info mb-3">View Account Requests</a>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>User ID</th>
+      <th>Username</th>
+      <th>Full Name</th>
+      <th>Account No</th>
+      <th>Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.user_id }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.full_name }}</td>
+        <td>{{ u.account_no or '-' }}</td>
+        <td>₹{{ u.balance }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

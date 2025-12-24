@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Pending Account Requests</h4>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in requests %}
+      <tr>
+        <td>{{ r.request_id }}</td>
+        <td>{{ r.username }}</td>
+        <td>{{ r.full_name }}</td>
+        <td>{{ r.email }}</td>
+        <td>{{ r.request_date }}</td>
+        <td>
+          <a href="{{ url_for('handle_account_request', request_id=r.request_id, action='approve') }}" class="btn btn-success btn-sm">Approve</a>
+          <a href="{{ url_for('handle_account_request', request_id=r.request_id, action='reject') }}" class="btn btn-danger btn-sm">Reject</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

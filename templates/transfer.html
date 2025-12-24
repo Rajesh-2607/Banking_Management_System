@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Transfer Funds</h4>
+<form method="POST">
+  <div class="mb-3">
+    <label>To Account Number</label>
+    <input name="to_account" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label>Amount</label>
+    <input name="amount" type="number" step="0.01" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label>Remarks</label>
+    <input name="remarks" class="form-control">
+  </div>
+  <button class="btn btn-primary">Transfer</button>
+</form>
+{% endblock %}

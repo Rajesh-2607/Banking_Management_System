@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Transaction History</h4>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Account No</th>
+      <th>Type</th>
+      <th>Amount</th>
+      <th>Remarks</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in transactions %}
+      <tr>
+        <td>{{ t.trans_id }}</td>
+        <td>{{ t.account_no }}</td>
+        <td>{{ t.trans_type }}</td>
+        <td>₹{{ t.amount }}</td>
+        <td>{{ t.remarks }}</td>
+        <td>{{ t.trans_date }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Welcome, {{ session['username'] }}</h3>
+
+{% if account %}
+  <div class="card mt-3">
+    <div class="card-body">
+      <h5>Account No: {{ account.account_no }}</h5>
+      <h5>Balance: ₹{{ account.balance }}</h5>
+    </div>
+  </div>
+
+  <hr>
+
+  <form action="{{ url_for('deposit') }}" method="POST" class="mt-3">
+    <h5>Deposit Money</h5>
+    <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Amount" required>
+    <button class="btn btn-primary">Deposit</button>
+  </form>
+
+  <form action="{{ url_for('withdraw') }}" method="POST" class="mt-3">
+    <h5>Withdraw Money</h5>
+    <input name="amount" type="number" step="0.01" class="form-control mb-2" placeholder="Amount" required>
+    <button class="btn btn-warning">Withdraw</button>
+  </form>
+
+  <a href="{{ url_for('transfer') }}" class="btn btn-outline-info mt-3">Transfer Money</a>
+
+{% elif request_status %}
+  <div class="alert alert-info mt-3">
+    Your account has been approved by admin. Please 
+    <a href="{{ url_for('initiate_account', request_id=request_status.request_id, token=request_status.token) }}">
+      deposit ₹1000
+    </a> to activate your account.
+  </div>
+
+{% else %}
+  <div class="alert alert-info mt-3">
+    You don’t have an account yet.
+  </div>
+  <a href="{{ url_for('request_account') }}" class="btn btn-success">Request New Account</a>
+{% endif %}
+{% endblock %}

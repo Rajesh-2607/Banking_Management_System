@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Activate Your Account</h2>
+<p>Deposit at least ₹1000 to activate your account.</p>
+<form method="POST">
+    <label>Amount (min ₹1000):</label>
+    <input type="number" name="amount" min="1000" required>
+    <button type="submit">Deposit & Activate</button>
+</form>
+{% endblock %}
