@@ -10,16 +10,43 @@ from functools import wraps
 from email.mime.text import MIMEText
 import smtplib
 
+def _require_env(name):
+    """Return an environment variable or fail loudly.
+
+    Credentials used to be literals in this file, which committed a working
+    Gmail app password and the MySQL root password to a public repository.
+    Nothing here carries a default: a missing value should stop the app, not
+    silently fall back to something insecure.
+    """
+    value = os.environ.get(name)
+    if not value:
+        raise RuntimeError(
+            f"{name} is not set. Copy .env.example, fill in your own values, "
+            f"and export them before starting the app."
+        )
+    return value
+
+
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET_KEY", "change_this_secret_for_prod")
+app.secret_key = _require_env("FLASK_SECRET_KEY")
 
 # --- Email Setup ---
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_ADDRESS = "rajeshsv.182006@gmail.com"
-EMAIL_PASSWORD = "favr jrox qxjh kkhu"
+# Optional: when SMTP is not configured the app still runs and account-request
+# notifications are skipped rather than crashing a request.
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_ENABLED = bool(EMAIL_ADDRESS and EMAIL_PASSWORD)
 
 def send_email(to_email, subject, message):
+    """Send a notification, or skip quietly if SMTP credentials are unset."""
+    if not EMAIL_ENABLED:
+        app.logger.warning(
+            "Email not sent to %s: EMAIL_ADDRESS/EMAIL_PASSWORD are not set.", to_email
+        )
+        return False
+
     msg = MIMEText(message)
     msg["From"] = EMAIL_ADDRESS
     msg["To"] = to_email
@@ -28,13 +55,14 @@ def send_email(to_email, subject, message):
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         server.send_message(msg)
+    return True
 
 # --- Database Config ---
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Rajesh@2607",
-    "database": "banking_project",
+    "host": os.environ.get("DB_HOST", "localhost"),
+    "user": os.environ.get("DB_USER", "root"),
+    "password": _require_env("DB_PASSWORD"),
+    "database": os.environ.get("DB_NAME", "banking_project"),
 }
 
 def get_db():
